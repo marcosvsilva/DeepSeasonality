@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Key and config files
+key.token
+config.cfg
+
+# PyCharm config files
+.idea/
+
 # C extensions
 *.so
 
