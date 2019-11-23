@@ -20,14 +20,16 @@ class Processing:
         for product in products:
             if self.verify_moviment(product):
                 dt_end, dt_start, ldate, lquantity = date.today(), (date.today() - timedelta(days=730)), [], []
+                ldays, aux = [], 0
 
                 for sh_date in pd.date_range(start=dt_start, end=dt_end, freq='D'):
-                    str_date = sh_date.strftime("%m-%d-%Y %H:%M:%S")
+                    aux += 1
+                    str_date = sh_date.strftime("%m-%d-%Y")
                     params = {':id_company': product['id_company'], ':id_product': product['id'], ':date': str_date}
                     quantity = self._persistence.sql_query('get_moviment', ['quantity'], params)
-                    ldate.append(str_date), lquantity.append(quantity[0]['quantity'])
+                    ldate.append(str_date), lquantity.append(quantity[0]['quantity']), ldays.append(aux)
 
-                df = pd.DataFrame({'date': ldate, 'quantity': lquantity}, columns=['date', 'quantity'])
+                df = pd.DataFrame({'date': ldate, 'days': ldays, 'quantity': lquantity})
                 df.to_csv('{}\\{}_{}.csv'.format(self._directories['dataset_path'], product['id_company'],
                                                  product['id']), index=None, header=True)
 
