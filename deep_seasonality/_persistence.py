@@ -1,5 +1,5 @@
 import pymssql
-from _config import Config, Token
+from _config import Token
 
 
 class Persistence:
@@ -75,6 +75,6 @@ class Persistence:
             raise Exception('exception update sql {}, fail: {}'.format(file, fail), True)
 
     def get_file_sql(self, file_name):
-        with open('{}\\{}.sql'.format(self._sqls_path, file_name)) as file:
+        with open('{}\\{}.sql'.format(self._sqls_path, file_name), 'r', -1, 'cp1252') as file:
             sql = file.read()
         return sql
