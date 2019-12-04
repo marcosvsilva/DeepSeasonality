@@ -10,9 +10,6 @@ config.cfg
 # PyCharm config files
 .idea/
 
-# Jupyter Notebook Files
-*.ipynb
-
 # C extensions
 *.so
 
