@@ -23,7 +23,7 @@ class Persistence:
                 self._connection = pymssql.connect(server=server, database=database, user=user, password=password)
 
         except pymssql.Error as fail:
-            raise Exception('exception connection, fail : {}'.format(fail))
+            raise Exception('Exception connection, fail : {}'.format(fail))
 
     def sql_query(self, file, table_columns, params={}):
         try:
@@ -48,33 +48,34 @@ class Persistence:
 
             return response
         except Exception as fail:
-            raise Exception('exception get sql {}, fail: {}'.format(file, fail))
+            raise Exception('Exception get sql {}, fail: {}'.format(file, fail))
 
     def sql_update(self, file, list_update):
         try:
             sql = self.get_file_sql(file)
 
-            cursor = self._connection.cursor()
-            cursor.executemany(sql, list_update)
+            if len(list_update) > 0:
+                for item in list_update:
+                    for key, value in item.items():
+                        sql = sql.replace(key, str(value))
+                    self._sql_execute(sql)
 
             self._connection.commit()
         except Exception as fail:
             self._connection.rollback()
-            raise Exception('exception update sql {}, fail: {}'.format(file, fail), True)
+            raise Exception('Exception update sql {}, fail: {}'.format(file, fail), True)
 
-    def sql_execute(self, file):
+    def _sql_execute(self, sql):
         try:
-            sql = self.get_file_sql(file)
-
             cursor = self._connection.cursor()
             cursor.execute(sql)
 
             self._connection.commit()
         except Exception as fail:
             self._connection.rollback()
-            raise Exception('exception update sql {}, fail: {}'.format(file, fail), True)
+            raise Exception('Exception execute sql, fail: {}'.format(fail), True)
 
     def get_file_sql(self, file_name):
-        with open('{}\\{}.sql'.format(self._sqls_path, file_name), 'r', -1, 'cp1252') as file:
+        with open(r'{}\{}.sql'.format(self._sqls_path, file_name), 'r', -1, 'cp1252') as file:
             sql = file.read()
         return sql
