@@ -1,0 +1,14 @@
+DECLARE @ID VARCHAR(500)
+
+EXEC sp_GeraID 'Arca', ':id_company', '0000000004', 'SAZO', @ID OUTPUT
+
+INSERT INTO
+   SAZONALIDADES
+   (SAZO_ID, PROD_ID, SAZO_MES_INICIAL, SAZO_DIA_INICIAL,
+   SAZO_MES_FINAL, SAZO_DIA_FINAL, SAZO_QTDE_MINIMA,
+   SAZO_ATIVO, SAZO_CADASTRO_AUTOMATICO, SAZO_USRS_ID,
+   SAZO_LASTUPDATE)
+VALUES
+   (@ID, ':id_product', :begin_month, :begin_date,
+   :end_month, :end_day, :quantity, 'Sim',
+   'Sim', NULL, GETDATE())
