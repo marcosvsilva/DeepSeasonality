@@ -56,16 +56,28 @@ class Persistence:
 
             if len(list_update) > 0:
                 for item in list_update:
+                    new_insert = sql
                     for key, value in item.items():
-                        sql = sql.replace(key, str(value))
-                    self._sql_execute(sql)
+                        new_insert = new_insert.replace(key, str(value))
+                    self._sql_execute_many(new_insert)
 
             self._connection.commit()
         except Exception as fail:
             self._connection.rollback()
             raise Exception('Exception update sql {}, fail: {}'.format(file, fail), True)
 
-    def _sql_execute(self, sql):
+    def sql_execute(self, file):
+        try:
+            sql = self.get_file_sql(file)
+            cursor = self._connection.cursor()
+            cursor.execute(sql)
+
+            self._connection.commit()
+        except Exception as fail:
+            self._connection.rollback()
+            raise Exception('Exception execute sql {}, fail: {}'.format(file, fail), True)
+
+    def _sql_execute_many(self, sql):
         try:
             cursor = self._connection.cursor()
             cursor.execute(sql)
@@ -73,7 +85,7 @@ class Persistence:
             self._connection.commit()
         except Exception as fail:
             self._connection.rollback()
-            raise Exception('Exception execute sql, fail: {}'.format(fail), True)
+            raise Exception('Exception execute many sql, fail: {}'.format(fail), True)
 
     def get_file_sql(self, file_name):
         with open(r'{}\{}.sql'.format(self._sqls_path, file_name), 'r', -1, 'cp1252') as file:
