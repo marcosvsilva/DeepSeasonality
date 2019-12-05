@@ -51,11 +51,11 @@ class Processing:
                                  'Update seasonalities product: {}!'.format(product['id']))
 
     def process(self):
-        products_fields = ['id_company', 'id', 'code', 'name', 'balance']
-
         try:
-            generate_log(self._directories['log_file'], 'Find holidays!')
+            generate_log(self._directories['log_file'], 'Clean seasonality!')
+            self._persistence.sql_execute('clean_seasonality')
 
+            generate_log(self._directories['log_file'], 'Find holidays!')
             holidays = Holidays()
 
             list_holidays = holidays.get_holidays()
@@ -67,8 +67,8 @@ class Processing:
             for company in companies:
                 generate_log(self._directories['log_file'], 'Find products company: {}!'.format(company['id']))
 
-                param = {':id_company': company['id']}
-                products = self._persistence.sql_query('get_products', products_fields, param)
+                fields, params = ['id_company', 'id'], {':id_company': company['id']}
+                products = self._persistence.sql_query('get_products', fields, params)
                 self._process_product(products)
         except Exception as fail:
             raise Exception('Exception abort, fail: {}'.format(fail), True)
