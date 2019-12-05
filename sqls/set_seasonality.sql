@@ -1,6 +1,15 @@
-DECLARE @ID VARCHAR(500)
+DECLARE @SAZO_ID VARCHAR(22)
+      , @UNEM_ID VARCHAR(22)
+	  
+SET @UNEM_ID = ':id_company'
 
-EXEC sp_GeraID 'Arca', ':id_company', '0000000004', 'SAZO', @ID OUTPUT
+WHILE 1 = 1
+BEGIN
+  EXEC dbo.sp_Formata_Id @UNEM_ID,'ID', 'SAZONALIDADES', @SAZO_ID OUTPUT
+  SET @SAZO_ID = LTRIM(RTRIM(@SAZO_ID))
+  IF NOT EXISTS(SELECT SAZO_ID FROM SAZONALIDADES WHERE SAZO_ID = @SAZO_ID)
+    BREAK
+END
 
 INSERT INTO
    SAZONALIDADES
@@ -9,6 +18,6 @@ INSERT INTO
    SAZO_ATIVO, SAZO_CADASTRO_AUTOMATICO, SAZO_USRS_ID,
    SAZO_LASTUPDATE)
 VALUES
-   (@ID, ':id_product', :begin_month, :begin_date,
+   (@SAZO_ID, ':id_product', :begin_month, :begin_date,
    :end_month, :end_day, :quantity, 'Sim',
    'Sim', NULL, GETDATE())
