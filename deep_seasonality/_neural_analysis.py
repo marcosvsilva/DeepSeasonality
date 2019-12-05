@@ -28,7 +28,7 @@ class NeuralAnalysis:
 
         validate = (max([sum_first, sum_second]) - min([sum_first, sum_second]))
         validate = validate < (max([sum_first, sum_second]) * 0.5)
-        quantity = (max([sum_first, sum_second]) - min([sum_first, sum_second])) / 2
+        quantity = ((sum_first * 1.2) + (sum_second * 1.2)) / 2
 
         if validate:
             self._data.append({**self._params, **{':begin_month': begin.month, ':begin_date': begin.day,
