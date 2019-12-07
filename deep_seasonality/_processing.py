@@ -1,4 +1,5 @@
 import pandas as pd
+import threading
 from datetime import datetime, timedelta
 from _persistence import Persistence
 from _holidays import Holidays
@@ -69,6 +70,10 @@ class Processing:
 
                 fields, params = ['id_company', 'id'], {':id_company': company['id']}
                 products = self._persistence.sql_query('get_products', fields, params)
-                self._process_product(products)
+
+                thread = threading.Thread(target=self._process_product, args=products)
+                thread.daemon = True
+                thread.start()
+                #self._process_product(products)
         except Exception as fail:
             raise Exception('Exception abort, fail: {}'.format(fail), True)
