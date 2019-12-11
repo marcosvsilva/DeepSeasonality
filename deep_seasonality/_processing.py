@@ -81,11 +81,11 @@ class Processing:
             pool.close()
             pool.join()
 
-            # for company in companies:
-            #     generate_log(self._directories['log_file'], 'Start thread company: {}!'.format(company['id']))
-            #
-            #     thread = threading.Thread(target=self._process_product, args=(company['id'],))
-            #     thread.daemon = True
-            #     thread.start()
+            for company in companies:
+                generate_log(self._directories['log_file'], 'Start thread company: {}!'.format(company['id']))
+
+                thread = threading.Thread(target=self._process_product, args=(company['id'],))
+                thread.daemon = True
+                thread.start()
         except Exception as fail:
             raise Exception('Exception abort, fail: {}'.format(fail), True)
