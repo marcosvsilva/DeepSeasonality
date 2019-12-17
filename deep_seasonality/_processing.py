@@ -1,5 +1,4 @@
 import pandas as pd
-from multiprocessing.dummy import Pool as ThreadPool
 from datetime import datetime, timedelta
 from _persistence import Persistence
 from _holidays import Holidays
@@ -74,18 +73,10 @@ class Processing:
                     self._holidays.append(datetime.strptime(holiday['date'], '%d/%m/%Y'))
 
             companies = self._persistence.sql_query('get_companies', ['id'])
-            companies_list = (x['id'] for x in companies)
-            # print(x for x in companies_list)
-            # pool = ThreadPool(4)
-            # pool.starmap(self._process_product, (companies_list,))
-            # pool.close()
-            # pool.join()
 
             for company in companies:
                 generate_log(self._directories['log_file'], 'Start thread company: {}!'.format(company['id']))
+                self._process_product,company['id'])
 
-                # thread = threading.Thread(target=self._process_product, args=(company['id'],))
-                # thread.daemon = True
-                # thread.start()
         except Exception as fail:
             raise Exception('Exception abort, fail: {}'.format(fail), True)
